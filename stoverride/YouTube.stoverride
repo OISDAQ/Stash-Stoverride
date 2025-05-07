@@ -1,6 +1,6 @@
-name: "YouTube去广告"
+name: "YouTube"
 desc: |-
-  支持pip，后台播放
+  去广告
 author: |-
   Maasea 
 homepage: "https://whatshub.top"
