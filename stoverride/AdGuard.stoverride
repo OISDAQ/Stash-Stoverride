@@ -19,4 +19,4 @@ http:
 script-providers:
   AdGuard:
     url: https://raw.githubusercontent.com/yqc007/QuantumultX/master/AdGuardProCrack.js
-    interval: 86400
+    interval: 0
