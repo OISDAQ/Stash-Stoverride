@@ -30,4 +30,4 @@ http:
 script-providers:
   YouTube:
     url: https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/youtube.response.js
-    interval: 86400
+    interval: 0
