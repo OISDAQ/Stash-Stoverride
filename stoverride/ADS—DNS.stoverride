@@ -1,0 +1,20 @@
+#SUBSCRIBED https://raw.githubusercontent.com/qsoyq/stash/main/override/dns/adguardhome.stoverride
+name: "DNS去广告"
+desc: |-
+    - 建议按如下操作打开 Fallback DNS
+    - iOS: 设置 -> 网络设置 -> Fallback DNS
+    - Mac: 控制面板 -> 设置 -> 网络 -> Fallback DNS
+category: "App"
+icon: https://raw.githubusercontent.com/qsoyq/icons/main/assets/icon/adguard.png
+dns:
+    default-nameserver: #!replace
+        - https://223.6.6.6/dns-query
+    nameserver: #!replace
+        - https://ahd.19940731.xyz/dns-query/
+    fallback:
+        - https://dns.alidns.com/dns-query
+    udp-nameserver: #!replace
+        - 223.6.6.6:53
+rules:
+    - DOMAIN,ahd.19940731.xyz,PROXY
+    - IP-CIDR,0.0.0.0/24,REJECT,no-resolve,no-track # DNS屏蔽
