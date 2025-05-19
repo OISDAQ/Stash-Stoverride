@@ -16,6 +16,6 @@ rules:
     - DOMAIN,ahd.19940731.xyz,选择代理
     - IP-CIDR,0.0.0.0/24,REJECT,no-resolve,no-track # DNS屏蔽
 
-#   - 建议按如下操作打开 Fallback DNS
-    - iOS: 设置 -> 网络设置 -> Fallback DNS
-    - Mac: 控制面板 -> 设置 -> 网络 -> Fallback DNS
+### - 建议按如下操作打开 Fallback DNS
+### - iOS: 设置 -> 网络设置 -> Fallback DNS
+### - Mac: 控制面板 -> 设置 -> 网络 -> Fallback DNS
