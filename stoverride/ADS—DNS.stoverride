@@ -1,4 +1,3 @@
-#SUBSCRIBED https://raw.githubusercontent.com/qsoyq/stash/main/override/dns/adguardhome.stoverride
 name: "DNS去广告"
 desc: |-
     - 建议按如下操作打开 Fallback DNS
