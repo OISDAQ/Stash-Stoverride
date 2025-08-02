@@ -1,7 +1,8 @@
-name: Google搜索重定向
-desc: 将Google搜索重定向至.com域名
-icon: https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Google.png
-category: 去广告
+name: "Google搜索重定向"
+desc:  |-
+    将Google搜索重定向至.com域名
+category: "APP"
+icon: "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Google.png"
 http:
   mitm:
     - www.google.cn
