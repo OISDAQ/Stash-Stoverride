@@ -1,7 +1,7 @@
 name: "Google搜索重定向"
 desc:  |-
     将Google搜索重定向至.com域名
-category: "APP"
+category: "App"
 icon: "https://gitlab.com/lodepuly/iconlibrary/-/raw/main/App_icon/120px/Google.png"
 http:
   mitm:
