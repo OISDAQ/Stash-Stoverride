@@ -1,7 +1,7 @@
 name: "去广告"
 desc: |-
     DNS去广告
-category: "App"
+category: "去广告"
 icon: "https://fastly.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AdBlack.png"
 dns:
     default-nameserver: #!replace
@@ -18,4 +18,4 @@ rules:
 
 ### - 建议按如下操作打开 Fallback DNS
 ### - iOS: 设置 -> 网络设置 -> Fallback DNS
-### - Mac: 控制面板 -> 设置 -> 网络 -> Fallback DNS
+### - Mac: 控制面板 -> 设置 -> 网络 -> Fallback DN
