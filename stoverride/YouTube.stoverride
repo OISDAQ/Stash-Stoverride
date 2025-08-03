@@ -5,7 +5,7 @@ author: |-
   Maasea 
 homepage: "https://whatshub.top"
 icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png"
-category: "App"
+category: "去广告"
 
 http:
   mitm:
