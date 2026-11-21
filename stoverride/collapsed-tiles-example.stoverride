@@ -1,27 +1,29 @@
-#SUBSCRIBED https://fastly.jsdelivr.net/gh/StashNetworks/misc@master/collapsed-tiles/collapsed-tiles-example.stoverride
-name: Collapsed Tiles Example
+name: 节点服务检测
+desc: 长按节点查看 ChatGPT、YouTube Premium、Netflix 和 GitHub 的检测结果。
+icon: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/img/chatgpt.png
 
 tiles:
   - name: ChatGPT-Web-Check
     title: ChatGPT Web
     icon: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/img/chatgpt.png
     collapsed: true
-    url: https://chatgpt.com
   - name: ChatGPT-App-Check
     title: ChatGPT App
     icon: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/img/chatgpt.png
     collapsed: true
-    url: https://chatgpt.com
   - name: YouTube-Check
     title: YouTube
     icon: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/img/youtube.png
     collapsed: true
-    url: https://www.youtube.com
   - name: Netflix-Check
     title: Netflix
     icon: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/img/netflix.png
     collapsed: true
-    url: https://www.netflix.com
+  - name: GitHub-Web-Check
+    title: GitHub
+    icon: chevron.left.forwardslash.chevron.right
+    content: 等待检测
+    collapsed: true
 
 script-providers:
   ChatGPT-Web-Check:
@@ -32,3 +34,23 @@ script-providers:
     url: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/script/youtube.js
   Netflix-Check:
     url: https://fastly.jsdelivr.net/gh/StashNetworks/misc@main/collapsed-tiles/script/netflix.js
+  GitHub-Web-Check:
+    payload: |
+      $httpClient.get({
+        url: "https://github.com/",
+        headers: { "Cache-Control": "no-cache" },
+        timeout: 8,
+        "auto-cookie": false,
+        "auto-redirect": false,
+      }, (error, response) => {
+        const status = Number(response && (response.status || response.statusCode));
+        if (error || !status) {
+          $done({ content: "连接失败", backgroundColor: "#995309" });
+          return;
+        }
+        const ok = status === 200;
+        $done({
+          content: ok ? "网页可达" : "HTTP " + status,
+          backgroundColor: ok ? "#30684D" : "#995309",
+        });
+      });
