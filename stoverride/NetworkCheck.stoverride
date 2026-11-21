@@ -1,23 +1,7 @@
-name: 校园网体检
-desc: 检测直连和代理，并在首页查看 Beszel 主机状态、CPU 和内存。
+name: 我的 VPS
+desc: 在 Stash 首页查看 Beszel 主机的在线状态、CPU 和内存占用。
 arguments-version: 1
 arguments:
-  target_url:
-    type: input
-    title: HTTPS 探测地址
-    description: 默认探测 example.com。可换成 VPS 上带有效证书的 HTTPS 网页或健康检查地址。
-    default: https://example.com/
-    required: true
-  proxy_name:
-    type: input
-    title: 代理节点或策略组
-    description: 填写当前配置中的完整名称。留空只测直连。选策略组时请确认它当前使用代理节点。
-    default: ''
-  open_url:
-    type: input
-    title: 点击面板打开的网址
-    description: 可以填写 Beszel 的 HTTPS 地址。留空时打开探测地址。
-    default: ''
   beszel_hub:
     type: input
     title: Beszel Hub 地址
@@ -30,13 +14,6 @@ arguments:
     default: ''
 
 tiles:
-  - name: oisdaq-network-check
-    title: 校园网体检
-    content: 等待首次探测…
-    icon: network
-    backgroundColor: '#6945AA'
-    interval: 600
-    argument: '{"targetUrl":${args.target_url|json},"proxyName":${args.proxy_name|json},"openUrl":${args.open_url|json}}'
   - name: oisdaq-beszel-status
     title: 我的 VPS
     content: 等待首次读取…
@@ -45,134 +22,6 @@ tiles:
     argument: '{"hub":${args.beszel_hub|json},"token":${args.beszel_token|json}}'
 
 script-providers:
-  oisdaq-network-check:
-    interval: 86400
-    payload: |
-      const TITLE = "校园网体检";
-      const TIMEOUT_SECONDS = 5;
-      const COLORS = {
-        ready: "#6945AA",
-        warning: "#995309",
-        failed: "#9D3949",
-      };
-
-      function isHttpsAddress(value) {
-        return /^https:\/\/[^/?#@\s\\]+(?:[/?#][^\s\\]*)?$/i.test(value);
-      }
-
-      function readOptions() {
-        try {
-          const options = JSON.parse($argument);
-          const targetUrl = options.targetUrl.trim();
-          if (!isHttpsAddress(targetUrl)) {
-            return { error: "请填写完整的 HTTPS 探测地址" };
-          }
-
-          const openUrl = options.openUrl.trim();
-          if (openUrl && !isHttpsAddress(openUrl)) {
-            return { error: "点击跳转地址需要以 https:// 开头" };
-          }
-
-          return {
-            targetUrl,
-            proxyName: options.proxyName.trim(),
-            openUrl: openUrl || targetUrl,
-          };
-        } catch {
-          return { error: "请在覆写详情中设置参数" };
-        }
-      }
-
-      function measure(url, label, policy) {
-        return new Promise((resolve) => {
-          const startedAt = Date.now();
-          $httpClient.get(
-            {
-              url,
-              headers: {
-                "X-Stash-Selected-Proxy": encodeURIComponent(policy),
-                "Cache-Control": "no-cache",
-              },
-              timeout: TIMEOUT_SECONDS,
-              "auto-cookie": false,
-              "auto-redirect": false,
-            },
-            (error, response) => {
-              const status = Number(response && (response.status || response.statusCode));
-              if (status >= 100 && status <= 599) {
-                const elapsed = Date.now() - startedAt;
-                const healthy = status >= 200 && status < 400;
-                const detail = healthy ? elapsed + " ms" : "HTTP " + status;
-                resolve({ text: label + " · " + detail, reached: true, healthy });
-                return;
-              }
-
-              const timedOut = /timed?\s*out|timeout|超时/i.test(String(error));
-              resolve({
-                text: label + (timedOut ? " · 超时" : " · 连接失败"),
-                reached: false,
-                healthy: false,
-              });
-            },
-          );
-        });
-      }
-
-      function localTime() {
-        const now = new Date();
-        const hour = String(now.getHours()).padStart(2, "0");
-        const minute = String(now.getMinutes()).padStart(2, "0");
-        return hour + ":" + minute;
-      }
-
-      async function buildTile() {
-        const options = readOptions();
-        if (options.error) {
-          return {
-            title: TITLE,
-            content: options.error,
-            icon: "exclamationmark.circle",
-            backgroundColor: COLORS.warning,
-          };
-        }
-
-        const probes = [measure(options.targetUrl, "直连", "DIRECT")];
-        if (options.proxyName) {
-          probes.push(measure(options.targetUrl, "代理", options.proxyName));
-        }
-
-        const results = await Promise.all(probes);
-        const lines = results.map((result) => result.text);
-        if (!options.proxyName) {
-          lines.push("代理 · 未设置");
-        }
-        lines.push("更新于 " + localTime());
-
-        let backgroundColor = COLORS.ready;
-        if (!results.some((result) => result.reached)) {
-          backgroundColor = COLORS.failed;
-        } else if (!results.every((result) => result.healthy)) {
-          backgroundColor = COLORS.warning;
-        }
-
-        return {
-          title: TITLE,
-          content: lines.join("\n"),
-          icon: "network",
-          backgroundColor,
-          url: options.openUrl,
-        };
-      }
-
-      buildTile().then(
-        (tile) => $done(tile),
-        () => $done({
-          title: TITLE,
-          content: "探测失败 · 请检查 Stash 脚本日志",
-          icon: "exclamationmark.circle",
-          backgroundColor: COLORS.failed,
-        }),
-      );
   oisdaq-beszel-status:
     interval: 86400
     payload: |
@@ -213,7 +62,7 @@ script-providers:
         });
         function unavailable(reason) {
           const last = $persistentStore.read(cacheKey);
-          return { content: reason + (last ? "\n上次成功读取 " + last : ""), url: hub };
+          return { content: reason + (last ? "\n上次成功读取 " + last : "") };
         }
         if (reply.status === 401 || reply.status === 403) return unavailable("认证失败 · 请更新用户令牌");
         if (reply.error || reply.status !== 200) return unavailable("暂时无法读取 Hub · 请检查连接");
@@ -228,7 +77,7 @@ script-providers:
         lines.push("更新于 " + timestamp);
         const color = page.items.some(s => s.status === "down") ? "#9D3949"
           : page.items.every(s => s.status === "up") ? "#30684D" : "#995309";
-        return { content: lines.join("\n"), backgroundColor: color, url: hub };
+        return { content: lines.join("\n"), backgroundColor: color };
       }
 
       getTile().then(
